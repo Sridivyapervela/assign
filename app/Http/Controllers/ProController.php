@@ -6,6 +6,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Collection;
+use Intervention\Image\Facades\Image;
 
 class ProController extends Controller
 {
@@ -44,13 +45,19 @@ class ProController extends Controller
     public function store(Request $request)
     {
         $request->validate(['name'=>'required|min:3',
-            'description'=> 'required|min:5']);
+            'description'=> 'required|min:5',
+            'image'=> 'mimes:jpeg,jpg,bmp,png,gif']);
+        
         $pro=new Pro([
             'name'=>$request['name'],
             'Description'=>$request['description'],
             'user_id'=>auth()->id(),
         ]);
         $pro->save();
+
+        if($request->image){
+            $this->saveImages($request->image,$pro->id);
+        }
         
         return $this->index()->with([
             'mes_suc' => 'Project '. $pro->name .' is added succesfully'
@@ -101,7 +108,11 @@ class ProController extends Controller
     public function update(Request $request, Pro $pro)
     {
         $request->validate(['name'=>'required|min:3',
-            'description'=> 'required|min:5']);
+            'description'=> 'required|min:5',
+            'image'=> 'mimes:jpeg,jpg,bmp,png,gif']);
+        if($request->image){
+            $this->saveImages($request->image,$pro->id);
+        }
         $pro->update([
             'name'=>$request['name'],
             'Description'=>$request['description'],
@@ -125,5 +136,27 @@ class ProController extends Controller
             'mes_suc' => 'Project '. $old .' is deleted succesfully'
         ]);
 
+    }
+    public function saveImages($imgReq,$pro_id)
+    {
+        $image=Image::make($imgReq);
+            if( $image->width() > $image->height()){//lanscape
+                $image->widen(1200)
+                ->save(public_path().'/img/pros/').$pro_id.'_large.jpg'
+                ->widen(400)->pixelate(12)
+                ->save(public_path().'/img/pros/'.$pro_id.'_pixelated.jpg');
+                $image=Image::make($imgReq);
+                $image->widen(60)
+                ->save(public_path().'/img/pros/'.$pro_id.'_thumb.jpg');
+            }
+            else{//potrait
+                $image->heighten(900)
+                ->save(public_path().'/img/pros/').$pro_id.'_large.jpg'
+                ->heighten(400)->pixelate(12)
+                ->save(public_path().'/img/pros/'.$pro_id.'_pixelated.jpg');
+                $image=Image::make($imgReq);
+                $image->widen(60)
+                ->save(public_path().'/img/pros/'.$pro_id.'_thumb.jpg');
+            }
     }
 }
