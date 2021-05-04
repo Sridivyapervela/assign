@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use App\Models\Pro;
+use App\Http\Controllers\ProController;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -67,9 +69,8 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        return view('/tag/edit')->with(
-            ['tag' => $tag
-            ]); 
+        return view('tag.edit')->with(
+            ['tag' => $tag]); 
     }
 
     /**

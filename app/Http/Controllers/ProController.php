@@ -87,9 +87,8 @@ class ProController extends Controller
      */
     public function edit(Pro $pro)
     {
-       return view('/pro/edit')->with(
-            ['pro' => $pro
-            ]); 
+       return view('pro.edit')->with(
+            ['pro' => $pro]); 
     }
 
     /**
