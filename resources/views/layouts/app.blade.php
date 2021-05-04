@@ -33,6 +33,16 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
+                        @guest
+                        <li> <a class="nav-link" {{Request::is('start') ? 'active':'' }} href="{{ url('/start') }} ">Start   </a> </li>
+                        @endguest
+                        @auth
+                        <li> <a class="nav-link" {{Request::is('home') ? 'active':'' }} href="{{ url('/home') }} ">Home   </a> </li>
+                        @endauth
+                        <li> <a class="nav-link" {{Request::is('info')?'active':'' }} href="{{ url('/info') }}" > Info </a> </li>
+                        <li> <a class="nav-link" {{Request::is('pro*')?'active':'' }} href="{{ url('pro') }}" > Proj </a> </li>
+                        <li> <a class="nav-link" {{Request::is('tag*')?'active':'' }} href="{{ url('tag') }}" > Tag </a> </li>
+
 
                     </ul>
 
@@ -76,6 +86,24 @@
         </nav>
 
         <main class="py-4">
+                @isset($mes_suc)
+                <div class="container">
+                <div class="alert alert-success" role="alert">
+                    {!! $mes_suc !!}
+                </div>
+                </div>
+                @endisset
+                @if($errors->any())
+                <div class="container">
+                <div class="alert alert-danger" role="alert">
+                    <ul>
+                    @foreach($errors->all() as $err)
+                    <li>{!! $err !!}</li>
+                    @endforeach
+                    </ul>
+                </div>
+                </div>
+                @endif
             @yield('content')
         </main>
     </div>
