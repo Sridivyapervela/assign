@@ -22,7 +22,7 @@ class Pro extends Model
      */
     protected $fillable = [
         'name',
-        'Description',
+        'description',
         'user_id',
     ];
     use HasFactory;

@@ -19,15 +19,22 @@
                         <ul class="list-group">
                             @foreach($pros as $pro)
                                 <li class="list-group-item">
-                                    <a title="Show Details" href="/pro/{{ $pro->id }}">
-                                        <img src="/img/thumb_landscape.jpg" alt="thumb">
-                                        {{ $pro->name }}
+                                @if(file_exists(public_path('img/pros/'.$pro->id.'_thumb.jpg')))
+                                    <a title="Show Details" href="/pro/{{$pro->id}}">
+                                        <img src="/img/pros/{{$pro->id}}_thumb.jpg" alt="proj thumb"/>
                                     </a>
+                                    @endif
+                                    &nbsp;
+                                    <a title="Show Details" href="/pro/{{$pro->id}}">{{ $pro->name }} </a>
                                     @auth
                                     <a class="btn btn-sm btn-light ml-2" href="/pro/{{ $pro->id }}/edit"><i class="fas fa-edit"></i> Edit Pro</a>
                                     @endauth
                                     <span class="mx-2">Posted by: <a href="/user/{{ $pro->user->id }}">{{ $pro->user->name }} ({{ $pro->user->pros->count() }} pros)</a>
-                                    <a href="/user/{{ $pro->user->id }}"><img class="rounded" src="/img/thumb_portrait.jpg"></a>
+                                     @if(file_exists(public_path('img/users/'.$pro->user->id.'_thumb.jpg')))
+                                    <a href="/user/{{ $pro->user->id }}">
+                                        <img class="rounded" src="/img/users/{{$pro->user->id}}_thumb.jpg" alt="user thumb">
+                                    </a>
+                                    @endif
                                     </span>
                                     @auth
                                     <form class="float-right" style="display: inline" action="/pro/{{ $pro->id }}" method="post">

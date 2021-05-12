@@ -31,10 +31,17 @@
                                 @endif
                             </div>
                             <div class="col-md-3">
-                                <a href="/img/400x300.jpg" data-lightbox="400x300.jpg" data-title="{{ $pro->name }}">
-                                    <img class="img-fluid" src="/img/400x300.jpg" alt="">
-                                </a>
-                                <i class="fa fa-search-plus"></i> Click image to enlarge
+                                @if(Auth::user() && file_exists(public_path('img/pros/'.$pro->id.'_large.jpg')))
+                                HELLO
+                                    <a href="/img/pros/{{$pro->id}}_large.jpg" data-lightbox="img/pros/{{$pro->id}}_large.jpg" data-title="{{ $pro->name }}">
+                                        <img class="img-fluid" src="/img/pros/{{$pro->id}}_large.jpg" alt="" />
+                                    </a>
+                                    <i class="fa fa-search-plus"></i> Click image to enlarge
+                                @endif
+                                @if(!Auth::user() && file_exists(public_path('img/pros/'.$pro->id.'_pixelated.jpg')))
+                                HI
+                                        <img class="img-fluid" src="/img/pros/{{$pro->id}}_pixelated.jpg" alt="" />
+                                @endif
                             </div>
                         </div>
                     </div>

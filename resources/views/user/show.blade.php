@@ -18,8 +18,13 @@
                                     @if($user->pros->count() > 0)
                                         @foreach($user->pros as $pro)
                                             <li class="list-group-item">
-                                                <a title="Show Details" href="/pro/{{ $pro->id }}">{{ $pro->name }}</a>
-                                                <span class="float-right mx-2">{{ $pro->created_at->diffForHumans() }}</span>
+                                                @if(file_exists('img/pros/'.$pro->id.'_thumb.jpg'))
+                                                    <a title="Show Details" href="/pro/{{ $pro->id }}">
+                                                        <img src="/img/pros/{{ $pro->id }}_thumb.jpg" alt="pro Thumb">
+                                                    </a>
+                                                @endif
+                                                &nbsp;<a title="Show Details" href="/pro/{{ $pro->id }}">{{ $pro->name }}</a>
+                                                <span class="float-right mx-2">{{$pro->created_at->diffForHumans()}}</span>
                                                 <br>
                                                 @foreach($pro->tags as $tag)
                                                     <a href="/pro/tag/{{ $tag->id }}"><span class="badge badge-{{ $tag->style }}">{{ $tag->name }}</span></a>
@@ -29,12 +34,17 @@
                                 </ul>
                                 @else
                                     <p>
-                                        {{ $user->name }} has not created any projs yet.
+                                        {{ $user->name }} has not created any pros yet.
                                     </p>
                                 @endif
                             </div>
                             <div class="col-md-3">
-                                <img class="img-thumbnail" src="/img/300x400.jpg" alt="{{ $user->name }}">
+                                @if(Auth::user() && file_exists('img/users/'.$user->id.'_large.jpg'))
+                                    <img class="img-thumbnail" src="/img/users/{{$user->id}}_large.jpg" alt="{{ $user->name }}">
+                                @endif
+                                @if(!Auth::user() && file_exists('img/users/'.$user->id.'_pixelated.jpg'))
+                                    <img class="img-thumbnail" src="/img/users/{{$user->id}}_pixelated.jpg" alt="{{ $user->name }}">
+                                @endif
                             </div>
                         </div>
 

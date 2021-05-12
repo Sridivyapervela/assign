@@ -37,9 +37,17 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/pro/tag/{tag_id}', [App\Http\Controllers\proTagController::class, 'getFilteredProj'])->name('pro_tag');
+//attach tag
+Route::get('/pro/{pro_id}/tag/{tag_id}/attach', [App\Http\Controllers\proTagController::class, 'attachTag']);
 
-Route::get('/pro/{pro_id}/tag/{tag_id}', [App\Http\Controllers\proTagController::class, 'attachTag'])->name('pro_tag');
+//Detach tag
+Route::get('/pro/{pro_id}/tag/{tag_id}/detach', [App\Http\Controllers\proTagController::class, 'detachTag'])->name('pro_tag');
 
-Route::get('/pro/{pro_id}/tag/{tag_id}', [App\Http\Controllers\proTagController::class, 'detachTag'])->name('pro_tag');
+//Delete Image from Pro
+Route::get('/delete-images/pro/{pro_id}', [App\Http\Controllers\ProController::class, 'deleteImages']);
+
+//Delete Image from User
+Route::get('/delete-images/user/{user_id}', [App\Http\Controllers\UserController::class, 'deleteImages']);
+
 Route::post('/pro', [ProController::class,'store']);
 Route::post('/tag', [TagController::class,'store']);

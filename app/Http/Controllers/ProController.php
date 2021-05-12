@@ -50,7 +50,7 @@ class ProController extends Controller
         
         $pro=new Pro([
             'name'=>$request['name'],
-            'Description'=>$request['description'],
+            'description'=>$request->description,
             'user_id'=>auth()->id(),
         ]);
         $pro->save();
@@ -78,7 +78,7 @@ class ProController extends Controller
         $usedTags = $pro->tags;
         $availableTags = $allTags->diff($usedTags);
 
-        return view('pro.show')->with([
+        return view('/pro/show')->with([
             'pro' => $pro,
             'availableTags' => $availableTags,
             'mes_suc' => Session::get('mes_suc'),
@@ -94,8 +94,10 @@ class ProController extends Controller
      */
     public function edit(Pro $pro)
     {
-       return view('pro.edit')->with(
-            ['pro' => $pro]); 
+       return view('/pro/edit')->with(
+            ['pro' => $pro,
+            'mes_suc' => Session::get('mes_suc'),
+            'mes_warn' => Session::get('mes_warn')]); 
     }
 
     /**
@@ -108,16 +110,20 @@ class ProController extends Controller
     public function update(Request $request, Pro $pro)
     {
         $request->validate(['name'=>'required|min:3',
-            'description'=> 'required|min:5',
-            'image'=> 'mimes:jpeg,jpg,bmp,png,gif']);
+            'description' => 'required|min:5',
+            'image' => 'mimes:jpeg,jpg,bmp,png,gif']);
         if($request->image){
             $this->saveImages($request->image,$pro->id);
         }
         $pro->update([
             'name'=>$request['name'],
-            'Description'=>$request['description'],
+            'description'=>$request->description,
+            'image'=>$request->image
         ]);
         return $this->index()->with([
+            'name'=>$request['name'],
+            'description'=>$request->description,
+            'image'=>$request->image,
             'mes_suc' => 'Project '. $pro->name .' is updated succesfully'
         ]);
     }
@@ -142,7 +148,7 @@ class ProController extends Controller
         $image=Image::make($imgReq);
             if( $image->width() > $image->height()){//lanscape
                 $image->widen(1200)
-                ->save(public_path().'/img/pros/').$pro_id.'_large.jpg'
+                ->save(public_path().'/img/pros/'.$pro_id.'_large.jpg')
                 ->widen(400)->pixelate(12)
                 ->save(public_path().'/img/pros/'.$pro_id.'_pixelated.jpg');
                 $image=Image::make($imgReq);
@@ -151,12 +157,23 @@ class ProController extends Controller
             }
             else{//potrait
                 $image->heighten(900)
-                ->save(public_path().'/img/pros/').$pro_id.'_large.jpg'
+                ->save(public_path().'/img/pros/'.$pro_id.'_large.jpg')
                 ->heighten(400)->pixelate(12)
                 ->save(public_path().'/img/pros/'.$pro_id.'_pixelated.jpg');
                 $image=Image::make($imgReq);
                 $image->widen(60)
                 ->save(public_path().'/img/pros/'.$pro_id.'_thumb.jpg');
             }
+    }
+    public function deleteImages($pro_id)
+    {
+        if(file_exists(public_path().'/img/pros/'.$pro_id.'_large.jpg'))
+            unlink(public_path().'/img/pros/'.$pro_id.'_large.jpg');
+        if(file_exists(public_path().'/img/pros/'.$pro_id.'_thumb.jpg'))
+            unlink(public_path().'/img/pros/'.$pro_id.'_thumb.jpg');
+        if(file_exists(public_path().'/img/pros/'.$pro_id.'_pixelated.jpg'))
+            unlink(public_path().'/img/pros/'.$pro_id.'_pixelated.jpg');
+        return back()->with(['mes_suc' => 'the image is deleted succesfully'
+        ]);
     }
 }
