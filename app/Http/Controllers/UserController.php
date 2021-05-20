@@ -118,17 +118,25 @@ class UserController extends Controller
     }
     public function saveImages($imgReq,$user_id)
     {
-        $image=Image::make($imgReq);
-                $image->widen(500)
-                ->heighten(500)
+         $image=Image::make($imgReq);
+            if( $image->width() > $image->height()){//lanscape
+                $image->widen(333)
                 ->save(public_path().'/img/users/'.$user_id.'_large.jpg')
                 ->widen(300)->pixelate(12)
-                ->heighten(300)
                 ->save(public_path().'/img/users/'.$user_id.'_pixelated.jpg');
                 $image=Image::make($imgReq);
                 $image->widen(60)
-                ->heighten(60)
                 ->save(public_path().'/img/users/'.$user_id.'_thumb.jpg');
+            }
+            else{//potrait
+                $image->heighten(333)
+                ->save(public_path().'/img/users/'.$user_id.'_large.jpg')
+                ->heighten(300)->pixelate(12)
+                ->save(public_path().'/img/users/'.$user_id.'_pixelated.jpg');
+                $image=Image::make($imgReq);
+                $image->widen(60)
+                ->save(public_path().'/img/users/'.$user_id.'_thumb.jpg');
+            }
     }
     public function deleteImages($user_id)
     {

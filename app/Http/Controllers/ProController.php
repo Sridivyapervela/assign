@@ -5,6 +5,7 @@ use App\Models\Pro;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Intervention\Image\Facades\Image;
 
@@ -94,6 +95,7 @@ class ProController extends Controller
      */
     public function edit(Pro $pro)
     {
+        abort_unless(Gate::allows('delete',$pro),403);
        return view('/pro/edit')->with(
             ['pro' => $pro,
             'mes_suc' => Session::get('mes_suc'),
@@ -109,6 +111,7 @@ class ProController extends Controller
      */
     public function update(Request $request, Pro $pro)
     {
+        abort_unless(Gate::allows('update',$pro),403);
         $request->validate(['name'=>'required|min:3',
             'description' => 'required|min:5',
             'image' => 'mimes:jpeg,jpg,bmp,png,gif']);
@@ -136,6 +139,7 @@ class ProController extends Controller
      */
     public function destroy(Pro $pro)
     {
+        abort_unless(Gate::allows('delete',$pro),403);
         $old=$pro->name;
         $pro->delete();
         return $this->index()->with([
