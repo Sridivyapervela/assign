@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApitokens;
-
+use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     public function pros(){
         return $this->hasMany('App\Models\Pro');
@@ -26,7 +26,8 @@ class User extends Authenticatable
         'email',
         'password',
         'motto',
-        'about_me'
+        'about_me',
+        'role'
     ];
 
     /**

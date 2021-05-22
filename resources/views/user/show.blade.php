@@ -5,8 +5,8 @@
         <div class="row justify-content-center">
             <div class="col-md-11">
                 <div class="card">
-                    <div style="font-size: 150%;" class="card-header">{{ $user->name }}</div>
-
+                    <div style="font-size: 150%;" class="card-header">{{ $user->name }}
+                        <b>{{ $user->role }}</b></div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-9">

@@ -13,9 +13,19 @@
                             <h2>Hello {{ auth()->user()->name }}</h2>
                             <h5>Your Motto</h5>
                             <p><p>{{ auth()->user()->motto ?? '' }}</p></p>
-                            <h5>Your "About Me" -Text</h5>
+                            <h5>Your "About Me"</h5>
                             <p><p>{{ auth()->user()->about_me ?? '' }}</p></p>
                             <a class="btn btn-light" href="user/{{auth()->user()->id}}/edit">Edit User</a>
+                            <p>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                Your permissions for projects
+                            </button>
+                            </p>
+                            <div class="collapse" id="collapseExample">
+                              <div class="card card-body">
+                                {{auth()->user()}}
+                            </div>
+                            </div>
                         </div>
                             <div class="col-md-3">@if(file_exists(public_path('img/users/'.auth()->user()->id.'_large.jpg')))
                             <img src="/img/users/{{auth()->user()->id}}_large.jpg" alt="{{auth()->user()->name}}"/>

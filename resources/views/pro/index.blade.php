@@ -26,9 +26,11 @@
                                     @endif
                                     &nbsp;
                                     <a title="Show Details" href="/pro/{{$pro->id}}">{{ $pro->name }} </a>
-                                    @auth
+                                    <!-- @auth -->
+                                    @if((auth()->user()->id==$pro->user->id and $pro->user->role=='writer') or auth()->user()->role=='admin')
                                     <a class="btn btn-sm btn-light ml-2" href="/pro/{{ $pro->id }}/edit"><i class="fas fa-edit"></i> Edit Pro</a>
-                                    @endauth
+                                    @endif
+                                    <!-- @endauth -->
                                     <span class="mx-2">Posted by: <a href="/user/{{ $pro->user->id }}">{{ $pro->user->name }} ({{ $pro->user->pros->count() }} pros)</a>
                                      @if(file_exists(public_path('img/users/'.$pro->user->id.'_thumb.jpg')))
                                     <a href="/user/{{ $pro->user->id }}">
@@ -36,13 +38,15 @@
                                     </a>
                                     @endif
                                     </span>
-                                    @auth
+                                    <!-- @auth -->
+                                    @if((auth()->user()->id==$pro->user->id and $pro->user->role=='writer') or auth()->user()->role=='admin')
                                     <form class="float-right" style="display: inline" action="/pro/{{ $pro->id }}" method="post">
                                         @csrf
                                         @method("DELETE")
                                         <input class="btn btn-sm btn-outline-danger" type="submit" value="Delete">
                                     </form>
-                                    @endauth
+                                    @endif
+                                    <!-- @endauth -->
                                     <span class="float-right mx-2">{{ $pro->created_at->diffForHumans() }}</span>
                                     <br>
                                     @foreach($pro->tags as $tag)

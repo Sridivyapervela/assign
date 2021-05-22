@@ -6,6 +6,9 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 
 class AdminSeeder extends Seeder
@@ -17,8 +20,8 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        
-         $admin=new User([
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        $admin=new User([
          	'name' => "divya",
             'email' => 'sridivyapervela357@gmail.com',
             'role'=>'admin',
@@ -27,6 +30,10 @@ class AdminSeeder extends Seeder
             'remember_token' => Str::random(10),
         ]);
         $admin->save();
+        $admin->givePermissionTo('read projects');
+        $admin->givePermissionTo('create projects');
+        $admin->givePermissionTo('edit projects');
+        $admin->givePermissionTo('delete projects');
     }
 
 }

@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Pro;
 use App\Models\User;
 use App\Http\Controllers\ProController;
 use Illuminate\Http\Request;
 use ​Illuminate\Support\Facades\Session;
 use Illuminate\Database\Eloquent\Collection;
 use Intervention\Image\Facades\Image;
-
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -42,14 +42,24 @@ class UserController extends Controller
     {
         $request->validate(['name'=>'required',
             'email_id'=> 'required',
+            'role'=>'required',
             'image'=> 'mimes:jpeg,jpg,bmp,png,gif']);
-        
         $user=new User([
             'name'=>$request['name'],
             'email_id'=>$request->email_id,
             'user_id'=>auth()->id(),
+            'role'=>$request->role
         ]);
         $user->save();
+        if($request->role=='user'){
+            $user->givePermissionTo('read projects');
+        }
+        if($request->role=='writer'){
+            $user->givePermissionTo('create projects');
+            $user->givePermissionTo('read projects');
+            $user->givePermissionTo('edit projects');
+            $user->givePermissionTo('delete projects');
+        }
 
         if($request->image){
             $this->saveImages($request->image,$user->id);
@@ -80,8 +90,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $role = Role::get(); 
         return view('/user/edit')->with(
-            ['user' => $user,
+            ['user' => $user,'role'=$role
             ]);     }
 
     /**
@@ -98,6 +109,12 @@ class UserController extends Controller
             'image' => 'mimes:jpeg,jpg,bmp,png,gif']);
         if($request->image){
             $this->saveImages($request->image,$user->id);
+        }
+        if (isset($roles)) {        
+            $user->roles()->sync($roles);          
+        }        
+        else {
+            $user->roles()->detach();
         }
         $user->update([
             'name'=>$request['name'],
